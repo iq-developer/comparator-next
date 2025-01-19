@@ -118,6 +118,10 @@ const Comparator: React.FC = () => {
     }
   };
 
+  const handlePlayAnimation = () => {
+    console.log('start lines animation');
+  };
+
   const isButtonDisabled = (id: string) => {
     return lines.some((line) => line.start.id === id || line.end.id === id);
   };
@@ -153,6 +157,7 @@ const Comparator: React.FC = () => {
           />
         )}
       </svg>
+
       <div className="w-[700px] h-[600px] bg-white grid grid-cols-3">
         <div className="flex items-center justify-center">
           <input
@@ -164,12 +169,21 @@ const Comparator: React.FC = () => {
         <div className="flex items-center justify-center">
           <button
             onClick={handleSwitchLines}
-            className="w-24 h-10 bg-sky-200 rounded-md m-1"
+            className={`w-24 h-10  hover:bg-sky-600 rounded-md m-1 ${
+              lines.length === 0 ? 'bg-sky-500' : 'bg-gray-400'
+            }`}
           >
             {lines.length === 0 ? 'Show lines' : 'Hide lines'}
           </button>
-          <button className="w-20 h-10 bg-sky-200 rounded-md m-1">
-            Options
+
+          <button
+            onClick={handlePlayAnimation}
+            disabled={lines.length === 0}
+            className={`w-10 h-10  rounded-full m-1 ${
+              lines.length === 0 ? 'bg-gray-300' : 'bg-sky-500 hover:bg-sky-600'
+            }`}
+          >
+            ►
           </button>
         </div>
         <div className="flex items-center justify-center">
@@ -182,8 +196,8 @@ const Comparator: React.FC = () => {
         <div className="flex flex-col-reverse items-center justify-center ">
           <button
             id="bottom1"
-            className={`w-10 h-10 bg-sky-500 rounded-full m-1 text-white text-xl ${
-              isButtonDisabled('bottom1') ? 'opacity-0 ' : ''
+            className={`w-10 h-10 bg-white hover:bg-sky-200 border-dashed border-gray-300 border-2 rounded-full m-1 text-gray-300 text-xl ${
+              isButtonDisabled('bottom1') ? 'opacity-0' : ''
             }`}
             onMouseDown={handleMouseDown}
             disabled={isButtonDisabled('bottom1')}
@@ -193,8 +207,8 @@ const Comparator: React.FC = () => {
           <Block />
           <button
             id="top1"
-            className={`w-10 h-10 bg-sky-500 rounded-full m-1 text-white text-xl ${
-              isButtonDisabled('top1') ? 'opacity-0 ' : ''
+            className={`w-10 h-10 bg-white hover:bg-sky-200 border-dashed border-gray-300 border-2 rounded-full m-1 text-gray-300 text-xl ${
+              isButtonDisabled('top1') ? 'opacity-0' : ''
             }`}
             onMouseDown={handleMouseDown}
             disabled={isButtonDisabled('top1')}
@@ -209,7 +223,7 @@ const Comparator: React.FC = () => {
         <div className="flex flex-col-reverse items-center justify-center">
           <button
             id="bottom2"
-            className={`w-10 h-10 bg-sky-500 rounded-full m-1 text-white text-xl ${
+            className={`w-10 h-10 bg-white hover:bg-sky-200 border-dashed border-gray-300 border-2 rounded-full m-1 text-gray-300 text-xl ${
               isButtonDisabled('bottom2') ? 'opacity-0 ' : ''
             }`}
             onMouseDown={handleMouseDown}
@@ -229,7 +243,7 @@ const Comparator: React.FC = () => {
           <Block />
           <button
             id="top2"
-            className={`w-10 h-10 bg-sky-500 rounded-full m-1 text-white text-xl ${
+            className={`w-10 h-10 bg-white hover:bg-sky-200 border-dashed border-gray-300 border-2 rounded-full m-1 text-gray-300 text-xl ${
               isButtonDisabled('top2') ? 'opacity-0' : ''
             }`}
             onMouseDown={handleMouseDown}
