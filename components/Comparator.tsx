@@ -5,6 +5,7 @@ import Block from './Block';
 import BlockGenerator from './BlockGenerator';
 import Controls from './Controls';
 import LineStarter from './LineStarter';
+import ComparatorSign from './ComparatorSign';
 import type { Line } from '../types';
 
 const Comparator: React.FC = () => {
@@ -157,47 +158,51 @@ const Comparator: React.FC = () => {
         )}
       </svg>
 
-      <div className="w-[700px] h-[600px] bg-white grid grid-cols-3 pt-10">
-        <BlockGenerator stack={leftStack} setStack={setLeftStack} />
-        <Controls
-          handlePlayAnimation={handlePlayAnimation}
-          handleSwitchLines={handleSwitchLines}
-          lines={lines}
-        />
-        <BlockGenerator stack={rightStack} setStack={setRightStack} />
+      <div className="w-[700px] h-[600px] bg-white flex flex-col">
+        <div className="grid grid-cols-3 h-1/5  pt-10">
+          <BlockGenerator stack={leftStack} setStack={setLeftStack} />
+          <Controls
+            handlePlayAnimation={handlePlayAnimation}
+            handleSwitchLines={handleSwitchLines}
+            lines={lines}
+          />
+          <BlockGenerator stack={rightStack} setStack={setRightStack} />
+        </div>
 
-        <div className="flex flex-col-reverse items-center justify-center">
-          <LineStarter
-            handleMouseDown={handleMouseDown}
-            lines={lines}
-            id="bottom1"
-          />
-          {[...Array(leftStack)].map((_, index) => (
-            <Block key={index} />
-          ))}
-          <LineStarter
-            handleMouseDown={handleMouseDown}
-            lines={lines}
-            id="top1"
-          />
-        </div>
-        <div className="flex items-center justify-center text-9xl text-gray-400">
-          &lt;
-        </div>
-        <div className="flex flex-col-reverse items-center justify-center">
-          <LineStarter
-            handleMouseDown={handleMouseDown}
-            lines={lines}
-            id="bottom2"
-          />
-          {[...Array(rightStack)].map((_, index) => (
-            <Block key={index} />
-          ))}
-          <LineStarter
-            handleMouseDown={handleMouseDown}
-            lines={lines}
-            id="top2"
-          />
+        <div className="grid grid-cols-3 h-4/5">
+          <div className="flex flex-col-reverse items-center justify-center">
+            <LineStarter
+              handleMouseDown={handleMouseDown}
+              lines={lines}
+              id="bottom1"
+            />
+            {[...Array(leftStack)].map((_, index) => (
+              <Block key={index} />
+            ))}
+            <LineStarter
+              handleMouseDown={handleMouseDown}
+              lines={lines}
+              id="top1"
+            />
+          </div>
+          <div className="flex items-center justify-center">
+            <ComparatorSign />
+          </div>
+          <div className="flex flex-col-reverse items-center justify-center">
+            <LineStarter
+              handleMouseDown={handleMouseDown}
+              lines={lines}
+              id="bottom2"
+            />
+            {[...Array(rightStack)].map((_, index) => (
+              <Block key={index} />
+            ))}
+            <LineStarter
+              handleMouseDown={handleMouseDown}
+              lines={lines}
+              id="top2"
+            />
+          </div>
         </div>
       </div>
     </div>
