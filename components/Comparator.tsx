@@ -2,25 +2,28 @@
 
 import React, { useState, MouseEvent } from 'react';
 import Block from './Block';
-
-interface Line {
-  start: { id: string; x: number; y: number };
-  end: { id: string; x: number; y: number };
-}
+import BlockGenerator from './BlockGenerator';
+import Controls from './Controls';
+import LineStarter from './LineStarter';
+import type { Line } from '../types';
 
 const Comparator: React.FC = () => {
+  // State
   const [startButton, setStartButton] = useState<{
     id: string;
     x: number;
     y: number;
   } | null>(null);
   const [lines, setLines] = useState<Line[]>([]);
+  const [leftStack, setLeftStack] = useState<number>(0);
+  const [rightStack, setRightStack] = useState<number>(0);
 
+  // Handlers
   const handleMouseDown = (e: MouseEvent<HTMLButtonElement>) => {
-    const buttonId = e.target.id;
+    const buttonId = (e.target as HTMLButtonElement).id;
     if (startButton || !buttonId) return;
 
-    const rect = e.target.getBoundingClientRect();
+    const rect = (e.target as HTMLButtonElement).getBoundingClientRect();
     setStartButton({
       id: buttonId,
       x: rect.left + rect.width / 2,
@@ -31,7 +34,7 @@ const Comparator: React.FC = () => {
   const handleMouseUp = (e: MouseEvent<HTMLDivElement>) => {
     if (!startButton) return;
 
-    const buttonId = e.target.id;
+    const buttonId = (e.target as HTMLButtonElement).id;
     if (!buttonId || buttonId === startButton.id) {
       setStartButton(null);
       return;
@@ -52,7 +55,7 @@ const Comparator: React.FC = () => {
       alert('Correct!');
     }
 
-    const rect = e.target.getBoundingClientRect();
+    const rect = (e.target as HTMLButtonElement).getBoundingClientRect();
     const newLine: Line = {
       start: startButton,
       end: {
@@ -122,10 +125,6 @@ const Comparator: React.FC = () => {
     console.log('start lines animation');
   };
 
-  const isButtonDisabled = (id: string) => {
-    return lines.some((line) => line.start.id === id || line.end.id === id);
-  };
-
   return (
     <div
       className="flex justify-center flex-col items-center h-screen bg-gray-100"
@@ -158,99 +157,47 @@ const Comparator: React.FC = () => {
         )}
       </svg>
 
-      <div className="w-[700px] h-[600px] bg-white grid grid-cols-3">
-        <div className="flex items-center justify-center">
-          <input
-            type="text"
-            value="1"
-            className="w-20 h-10 border-2 border-gray-300 rounded-md text-center font-bold"
-          />
-        </div>
-        <div className="flex items-center justify-center">
-          <button
-            onClick={handleSwitchLines}
-            className={`w-24 h-10  hover:bg-sky-600 rounded-md m-1 ${
-              lines.length === 0 ? 'bg-sky-500' : 'bg-gray-400'
-            }`}
-          >
-            {lines.length === 0 ? 'Show lines' : 'Hide lines'}
-          </button>
+      <div className="w-[700px] h-[600px] bg-white grid grid-cols-3 pt-10">
+        <BlockGenerator stack={leftStack} setStack={setLeftStack} />
+        <Controls
+          handlePlayAnimation={handlePlayAnimation}
+          handleSwitchLines={handleSwitchLines}
+          lines={lines}
+        />
+        <BlockGenerator stack={rightStack} setStack={setRightStack} />
 
-          <button
-            onClick={handlePlayAnimation}
-            disabled={lines.length === 0}
-            className={`w-10 h-10  rounded-full m-1 ${
-              lines.length === 0 ? 'bg-gray-300' : 'bg-sky-500 hover:bg-sky-600'
-            }`}
-          >
-            ►
-          </button>
-        </div>
-        <div className="flex items-center justify-center">
-          <input
-            type="text"
-            value="10"
-            className="w-20 h-10 border-2 border-gray-300 rounded-md text-center font-bold"
-          />
-        </div>
-        <div className="flex flex-col-reverse items-center justify-center ">
-          <button
+        <div className="flex flex-col-reverse items-center justify-center">
+          <LineStarter
+            handleMouseDown={handleMouseDown}
+            lines={lines}
             id="bottom1"
-            className={`w-10 h-10 bg-white hover:bg-sky-200 border-dashed border-gray-300 border-2 rounded-full m-1 text-gray-300 text-xl ${
-              isButtonDisabled('bottom1') ? 'opacity-0' : ''
-            }`}
-            onMouseDown={handleMouseDown}
-            disabled={isButtonDisabled('bottom1')}
-          >
-            ⇢
-          </button>
-          <Block />
-          <button
+          />
+          {[...Array(leftStack)].map((_, index) => (
+            <Block key={index} />
+          ))}
+          <LineStarter
+            handleMouseDown={handleMouseDown}
+            lines={lines}
             id="top1"
-            className={`w-10 h-10 bg-white hover:bg-sky-200 border-dashed border-gray-300 border-2 rounded-full m-1 text-gray-300 text-xl ${
-              isButtonDisabled('top1') ? 'opacity-0' : ''
-            }`}
-            onMouseDown={handleMouseDown}
-            disabled={isButtonDisabled('top1')}
-          >
-            ⇢
-          </button>
+          />
         </div>
         <div className="flex items-center justify-center text-9xl text-gray-400">
-          {' '}
-          &lt;{' '}
+          &lt;
         </div>
         <div className="flex flex-col-reverse items-center justify-center">
-          <button
+          <LineStarter
+            handleMouseDown={handleMouseDown}
+            lines={lines}
             id="bottom2"
-            className={`w-10 h-10 bg-white hover:bg-sky-200 border-dashed border-gray-300 border-2 rounded-full m-1 text-gray-300 text-xl ${
-              isButtonDisabled('bottom2') ? 'opacity-0 ' : ''
-            }`}
-            onMouseDown={handleMouseDown}
-            disabled={isButtonDisabled('bottom2')}
-          >
-            ⇠
-          </button>
-          <Block />
-          <Block />
-          <Block />
-          <Block />
-          <Block />
-          <Block />
-          <Block />
-          <Block />
-          <Block />
-          <Block />
-          <button
+          />
+          {[...Array(rightStack)].map((_, index) => (
+            <Block key={index} />
+          ))}
+          <LineStarter
+            handleMouseDown={handleMouseDown}
+            lines={lines}
             id="top2"
-            className={`w-10 h-10 bg-white hover:bg-sky-200 border-dashed border-gray-300 border-2 rounded-full m-1 text-gray-300 text-xl ${
-              isButtonDisabled('top2') ? 'opacity-0' : ''
-            }`}
-            onMouseDown={handleMouseDown}
-            disabled={isButtonDisabled('top2')}
-          >
-            ⇠
-          </button>
+          />
         </div>
       </div>
     </div>
