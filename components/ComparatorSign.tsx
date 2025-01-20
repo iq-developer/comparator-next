@@ -1,7 +1,30 @@
 import React from 'react';
 
-const ComparatorSign: React.FC = () => {
-  return <div className="text-9xl text-gray-400">&lt;</div>;
+interface ComparatorSignProps {
+  leftStack: number;
+  rightStack: number;
+}
+
+const ComparatorSign: React.FC<ComparatorSignProps> = ({
+  leftStack,
+  rightStack,
+}) => {
+  let result = '';
+
+  if (!leftStack && !rightStack) {
+    return;
+  }
+  if (leftStack === rightStack) {
+    result = '=';
+  }
+  if (leftStack > rightStack) {
+    result = '>';
+  }
+  if (leftStack < rightStack) {
+    result = '<';
+  }
+
+  return <div className="text-9xl text-gray-400">{result}</div>;
 };
 
 export default ComparatorSign;

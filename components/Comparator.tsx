@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, MouseEvent } from 'react';
+import React, { useState, MouseEvent, useEffect } from 'react';
 import Block from './Block';
 import BlockGenerator from './BlockGenerator';
 import Controls from './Controls';
@@ -78,45 +78,45 @@ const Comparator: React.FC = () => {
     line.setAttribute('y2', e.clientY.toString());
   };
 
+  const handleUpdateLines = () => {
+    const top1 = document.getElementById('top1')!.getBoundingClientRect();
+    const top2 = document.getElementById('top2')!.getBoundingClientRect();
+    const bottom1 = document.getElementById('bottom1')!.getBoundingClientRect();
+    const bottom2 = document.getElementById('bottom2')!.getBoundingClientRect();
+
+    const initialLines: Line[] = [
+      {
+        start: {
+          id: 'top1',
+          x: top1.left + top1.width / 2,
+          y: top1.top + top1.height / 2,
+        },
+        end: {
+          id: 'top2',
+          x: top2.left + top2.width / 2,
+          y: top2.top + top2.height / 2,
+        },
+      },
+      {
+        start: {
+          id: 'bottom1',
+          x: bottom1.left + bottom1.width / 2,
+          y: bottom1.top + bottom1.height / 2,
+        },
+        end: {
+          id: 'bottom2',
+          x: bottom2.left + bottom2.width / 2,
+          y: bottom2.top + bottom2.height / 2,
+        },
+      },
+    ];
+
+    setLines(initialLines);
+  };
+
   const handleSwitchLines = () => {
     if (lines.length === 0) {
-      const top1 = document.getElementById('top1')!.getBoundingClientRect();
-      const top2 = document.getElementById('top2')!.getBoundingClientRect();
-      const bottom1 = document
-        .getElementById('bottom1')!
-        .getBoundingClientRect();
-      const bottom2 = document
-        .getElementById('bottom2')!
-        .getBoundingClientRect();
-
-      const initialLines: Line[] = [
-        {
-          start: {
-            id: 'top1',
-            x: top1.left + top1.width / 2,
-            y: top1.top + top1.height / 2,
-          },
-          end: {
-            id: 'top2',
-            x: top2.left + top2.width / 2,
-            y: top2.top + top2.height / 2,
-          },
-        },
-        {
-          start: {
-            id: 'bottom1',
-            x: bottom1.left + bottom1.width / 2,
-            y: bottom1.top + bottom1.height / 2,
-          },
-          end: {
-            id: 'bottom2',
-            x: bottom2.left + bottom2.width / 2,
-            y: bottom2.top + bottom2.height / 2,
-          },
-        },
-      ];
-
-      setLines(initialLines);
+      handleUpdateLines();
     } else {
       setLines([]);
     }
@@ -125,6 +125,11 @@ const Comparator: React.FC = () => {
   const handlePlayAnimation = () => {
     console.log('start lines animation');
   };
+
+  useEffect(() => {
+    if (lines.length === 0) return;
+    handleUpdateLines();
+  }, [leftStack, rightStack]);
 
   return (
     <div
@@ -158,13 +163,14 @@ const Comparator: React.FC = () => {
         )}
       </svg>
 
-      <div className="w-[700px] h-[600px] bg-white flex flex-col">
+      <div className="w-[700px] h-[600px] bg-white flex flex-col bg">
         <div className="grid grid-cols-3 h-1/5  pt-10">
           <BlockGenerator stack={leftStack} setStack={setLeftStack} />
           <Controls
             handlePlayAnimation={handlePlayAnimation}
             handleSwitchLines={handleSwitchLines}
             lines={lines}
+            hidden={leftStack === 0 && rightStack === 0}
           />
           <BlockGenerator stack={rightStack} setStack={setRightStack} />
         </div>
@@ -175,6 +181,7 @@ const Comparator: React.FC = () => {
               handleMouseDown={handleMouseDown}
               lines={lines}
               id="bottom1"
+              hidden={leftStack === 0 && rightStack === 0}
             />
             {[...Array(leftStack)].map((_, index) => (
               <Block key={index} />
@@ -183,16 +190,18 @@ const Comparator: React.FC = () => {
               handleMouseDown={handleMouseDown}
               lines={lines}
               id="top1"
+              hidden={leftStack === 0 && rightStack === 0}
             />
           </div>
           <div className="flex items-center justify-center">
-            <ComparatorSign />
+            <ComparatorSign leftStack={leftStack} rightStack={rightStack} />
           </div>
           <div className="flex flex-col-reverse items-center justify-center">
             <LineStarter
               handleMouseDown={handleMouseDown}
               lines={lines}
               id="bottom2"
+              hidden={leftStack === 0 && rightStack === 0}
             />
             {[...Array(rightStack)].map((_, index) => (
               <Block key={index} />
@@ -201,6 +210,7 @@ const Comparator: React.FC = () => {
               handleMouseDown={handleMouseDown}
               lines={lines}
               id="top2"
+              hidden={leftStack === 0 && rightStack === 0}
             />
           </div>
         </div>

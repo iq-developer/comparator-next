@@ -5,12 +5,14 @@ type ControlsProps = {
   handleMouseDown: (e: MouseEvent<HTMLButtonElement>) => void;
   lines: Line[];
   id: string;
+  hidden?: boolean;
 };
 
 const LineStarter: React.FC<ControlsProps> = ({
   handleMouseDown,
   lines,
   id,
+  hidden,
 }) => {
   const isButtonDisabled = (id: string) => {
     return lines.some((line) => line.start.id === id || line.end.id === id);
@@ -21,7 +23,7 @@ const LineStarter: React.FC<ControlsProps> = ({
       id={id}
       className={`w-10 h-10 bg-white hover:bg-sky-200 border-dashed border-gray-300 border-2 rounded-full m-1 text-gray-300 text-xl ${
         isButtonDisabled(id) ? 'opacity-0' : ''
-      }`}
+      } ${hidden ? 'hidden' : ''}`}
       onMouseDown={handleMouseDown}
       disabled={isButtonDisabled(id)}
     >
