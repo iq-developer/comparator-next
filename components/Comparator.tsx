@@ -162,7 +162,7 @@ const Comparator: React.FC = () => {
       </svg>
 
       <div className="w-[700px] h-[600px] bg-white flex flex-col bg">
-        <div className="grid grid-cols-3 h-1/5  pt-10">
+        <div className="grid grid-cols-3 h-1/6  pt-5">
           <BlockGenerator stack={leftStack} setStack={setLeftStack} />
           <Controls
             handlePlayAnimation={handlePlayAnimation}
@@ -173,7 +173,7 @@ const Comparator: React.FC = () => {
           <BlockGenerator stack={rightStack} setStack={setRightStack} />
         </div>
 
-        <div className="grid grid-cols-3 h-4/5">
+        <div className="grid grid-cols-3 h-5/6">
           <div className="flex flex-col-reverse items-center justify-center">
             <LineStarter
               handleMouseDown={handleMouseDown}

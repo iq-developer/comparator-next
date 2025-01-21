@@ -21,7 +21,7 @@ const LineStarter: React.FC<ControlsProps> = ({
   return (
     <button
       id={id}
-      className={`w-10 h-10 bg-white hover:bg-sky-200 border-dashed border-gray-300 border-2 rounded-full m-1 text-gray-300 text-xl ${
+      className={`w-10 h-10 bg-white hover:bg-sky-200 border-dashed border-gray-300 border-2 rounded-full -mt-2 ml-2 text-gray-300 text-xl ${
         isButtonDisabled(id) ? 'opacity-0' : ''
       } ${hidden ? 'hidden' : ''}`}
       onMouseDown={handleMouseDown}

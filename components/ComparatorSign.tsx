@@ -24,7 +24,7 @@ const ComparatorSign: React.FC<ComparatorSignProps> = ({
     result = '<';
   }
 
-  return <div className="text-9xl text-gray-400">{result}</div>;
+  return <div className="text-9xl text-gray-400 pb-3">{result}</div>;
 };
 
 export default ComparatorSign;
