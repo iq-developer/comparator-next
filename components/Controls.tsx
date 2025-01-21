@@ -23,7 +23,7 @@ const Controls: React.FC<ControlsProps> = ({
       >
         <button
           onClick={handleSwitchLines}
-          className={`w-10 h-10 border-2 border-gray-300 bg-white text-gray-600 hover:bg-sky-200 m-2`}
+          className={`w-10 h-10 border-2 border-gray-300 bg-white text-gray-600 hover:bg-sky-200 m-1`}
         >
           {lines.length === 0 ? '(o)' : '()'}
         </button>
@@ -31,7 +31,7 @@ const Controls: React.FC<ControlsProps> = ({
         <button
           onClick={handlePlayAnimation}
           disabled={lines.length < 2}
-          className={`w-10 h-10 text-2xl text-white m-2  ${
+          className={`w-10 h-10 text-2xl text-white m-1  ${
             lines.length < 2
               ? 'opacity-50 bg-gray-200 border-gray-300 border-2'
               : 'bg-sky-500 hover:bg-sky-600'
@@ -42,7 +42,7 @@ const Controls: React.FC<ControlsProps> = ({
 
         <button
           onClick={handleSwitchLines}
-          className={`w-10 h-10 border-2 border-gray-300 bg-white text-gray-600 hover:bg-sky-200  m-2`}
+          className={`w-10 h-10 border-2 border-gray-300 bg-white text-gray-600 hover:bg-sky-200  m-1`}
         >
           {lines.length === 0 ? 'Y' : 'N'}
         </button>

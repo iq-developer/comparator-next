@@ -118,8 +118,6 @@ const Comparator: React.FC = () => {
     }
   };
 
-  const handleRemoveBlock = () => {};
-
   const handlePlayAnimation = () => {
     console.log('start lines animation');
   };
