@@ -53,14 +53,23 @@ const Comparator: React.FC = () => {
     }
 
     const rect = (e.target as HTMLButtonElement).getBoundingClientRect();
-    const newLine: Line = {
-      start: startButton,
-      end: {
-        id: buttonId,
-        x: rect.left + rect.width / 2,
-        y: rect.top + rect.height / 2,
-      },
+
+    const endButton = {
+      id: buttonId,
+      x: rect.left + rect.width / 2,
+      y: rect.top + rect.height / 2,
     };
+
+    const newLine: Line =
+      startButton.x < endButton.x
+        ? {
+            start: startButton,
+            end: endButton,
+          }
+        : {
+            start: endButton,
+            end: startButton,
+          };
 
     setLines([...lines, newLine]);
     setStartButton(null);
@@ -74,7 +83,7 @@ const Comparator: React.FC = () => {
     line.setAttribute('y2', e.clientY.toString());
   };
 
-  const handleUpdateLines = () => {
+  const handleUpdateLines = (connected?: 'start' | 'end') => {
     const top1 = document.getElementById('top1')!.getBoundingClientRect();
     const top2 = document.getElementById('top2')!.getBoundingClientRect();
     const bottom1 = document.getElementById('bottom1')!.getBoundingClientRect();
@@ -107,6 +116,61 @@ const Comparator: React.FC = () => {
       },
     ];
 
+    if (connected === 'start') {
+      const averageStartY =
+        (initialLines[0].start.y + initialLines[1].start.y) / 2;
+      const connectedStartLines: Line[] = [
+        {
+          start: {
+            ...initialLines[0].start,
+            y: averageStartY,
+          },
+          end: {
+            ...initialLines[0].end,
+          },
+        },
+        {
+          start: {
+            ...initialLines[1].start,
+            y: averageStartY,
+          },
+          end: {
+            ...initialLines[1].end,
+          },
+        },
+      ];
+      setLines(connectedStartLines);
+      return;
+    }
+
+    if (connected === 'end') {
+      const averageEndY = (initialLines[0].end.y + initialLines[1].end.y) / 2;
+      const connectedEndLines: Line[] = [
+        {
+          start: {
+            ...initialLines[0].start,
+          },
+          end: {
+            ...initialLines[0].end,
+            y: averageEndY,
+          },
+        },
+        {
+          start: {
+            ...initialLines[1].start,
+          },
+          end: {
+            ...initialLines[1].end,
+            y: averageEndY,
+          },
+        },
+      ];
+      console.log('connectedEndLines:', connectedEndLines);
+
+      setLines(connectedEndLines);
+      return;
+    }
+
     setLines(initialLines);
   };
 
@@ -119,9 +183,31 @@ const Comparator: React.FC = () => {
   };
 
   const handlePlayAnimation = () => {
-    console.log('start lines animation');
-  };
+    const calculateDistance = (
+      point1: { x: number; y: number },
+      point2: { x: number; y: number }
+    ) => {
+      return Math.abs(point1.y - point2.y);
+    };
 
+    const startPoint1 = lines[0].start;
+    const endPoint1 = lines[0].end;
+    const startPoint2 = lines[1].start;
+    const endPoint2 = lines[1].end;
+
+    if (!startPoint1 || !endPoint1 || !startPoint2 || !endPoint2) return;
+
+    const distance1 = calculateDistance(startPoint1, startPoint2);
+    const distance2 = calculateDistance(endPoint1, endPoint2);
+
+    if (distance1 > distance2) {
+      handleUpdateLines('end');
+    } else if (distance1 < distance2) {
+      handleUpdateLines('start');
+    } else {
+      console.log('Distances are equal');
+    }
+  };
   useEffect(() => {
     if (lines.length === 0) return;
     handleUpdateLines();
