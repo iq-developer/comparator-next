@@ -52,10 +52,6 @@ const Comparator: React.FC = () => {
       return;
     }
 
-    if (lines.length > 0) {
-      alert('Correct!');
-    }
-
     const rect = (e.target as HTMLButtonElement).getBoundingClientRect();
     const newLine: Line = {
       start: startButton,
@@ -122,6 +118,8 @@ const Comparator: React.FC = () => {
     }
   };
 
+  const handleRemoveBlock = () => {};
+
   const handlePlayAnimation = () => {
     console.log('start lines animation');
   };
@@ -184,7 +182,10 @@ const Comparator: React.FC = () => {
               hidden={leftStack === 0 && rightStack === 0}
             />
             {[...Array(leftStack)].map((_, index) => (
-              <Block key={index} />
+              <Block
+                key={index}
+                handleRemoveBlock={() => setLeftStack(leftStack - 1)}
+              />
             ))}
             <LineStarter
               handleMouseDown={handleMouseDown}
@@ -204,7 +205,10 @@ const Comparator: React.FC = () => {
               hidden={leftStack === 0 && rightStack === 0}
             />
             {[...Array(rightStack)].map((_, index) => (
-              <Block key={index} />
+              <Block
+                key={index}
+                handleRemoveBlock={() => setRightStack(rightStack - 1)}
+              />
             ))}
             <LineStarter
               handleMouseDown={handleMouseDown}

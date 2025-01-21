@@ -30,9 +30,9 @@ const Controls: React.FC<ControlsProps> = ({
 
         <button
           onClick={handlePlayAnimation}
-          disabled={lines.length === 0}
+          disabled={lines.length < 2}
           className={`absolute top-20 w-16 h-16 rounded-full text-3xl  ${
-            lines.length === 0 ? 'hidden' : 'bg-sky-500 hover:bg-sky-600'
+            lines.length < 2 ? 'hidden' : 'bg-sky-500 hover:bg-sky-600'
           }`}
         >
           ►

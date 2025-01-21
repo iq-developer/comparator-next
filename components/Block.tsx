@@ -1,9 +1,13 @@
 import React from 'react';
 import './Block.css';
 
-const Block = () => {
+interface BlockProps {
+  handleRemoveBlock: () => void;
+}
+
+const Block: React.FC<BlockProps> = ({ handleRemoveBlock }) => {
   return (
-    <div className="w-5 h-5 m-1">
+    <button className="w-5 h-5 m-1" onClick={handleRemoveBlock}>
       <div className="cube">
         <div className="face top"></div>
         <div className="face bottom"></div>
@@ -12,7 +16,7 @@ const Block = () => {
         <div className="face front"></div>
         <div className="face back"></div>
       </div>
-    </div>
+    </button>
   );
 };
 
