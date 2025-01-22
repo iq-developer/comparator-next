@@ -3,6 +3,21 @@
   to { transform: rotate3d(1, 1, 0, 360deg); }
 }
 
+@keyframes blockAppearance {
+  0% {
+    transform: translateY(-20vh) ;
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0) ;
+    opacity: 1;
+  }
+}
+
+.block-appearance {
+  animation: blockAppearance 0.5s ease-out;
+}
+
 .cube {
   position: relative;
   width: 30px;

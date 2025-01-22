@@ -7,7 +7,10 @@ interface BlockProps {
 
 const Block: React.FC<BlockProps> = ({ handleRemoveBlock }) => {
   return (
-    <button className="w-5 h-5 mb-4" onClick={handleRemoveBlock}>
+    <button
+      className="w-5 h-5 mb-4 block-appearance"
+      onClick={handleRemoveBlock}
+    >
       <div className="cube">
         <div className="face top"></div>
         <div className="face bottom"></div>
