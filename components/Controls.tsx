@@ -3,17 +3,23 @@ import type { Line } from '../types';
 import { FaPlay } from 'react-icons/fa6';
 import { FaRegEyeSlash } from 'react-icons/fa';
 import { FaRegEye } from 'react-icons/fa';
+import { MdInput } from 'react-icons/md';
+import { TbNumber123 } from 'react-icons/tb';
 
 interface ControlsProps {
   handlePlayAnimation: () => void;
   handleSwitchLines: () => void;
   lines: Line[];
-  hidden?: boolean;
+  hidden: boolean;
+  isLabelMode: boolean;
+  setIsLabelMode: (isLabelMode: boolean) => void;
 }
 
 const Controls: React.FC<ControlsProps> = ({
   handlePlayAnimation,
   handleSwitchLines,
+  isLabelMode,
+  setIsLabelMode,
   lines,
   hidden,
 }) => {
@@ -27,6 +33,7 @@ const Controls: React.FC<ControlsProps> = ({
         <button
           onClick={handleSwitchLines}
           className={`w-10 h-10 border-2 border-gray-300 bg-white text-gray-500 hover:bg-sky-200 m-1 text-2xl flex justify-center items-center`}
+          title="Show/hide lines"
         >
           {lines?.length === 0 ? <FaRegEyeSlash /> : <FaRegEye />}
         </button>
@@ -39,8 +46,17 @@ const Controls: React.FC<ControlsProps> = ({
               ? 'opacity-50 bg-gray-200 border-gray-300 border-2'
               : 'bg-sky-500 hover:bg-sky-600'
           }`}
+          title="Play final animation"
         >
           <FaPlay />
+        </button>
+
+        <button
+          onClick={() => setIsLabelMode(!isLabelMode)}
+          className={`w-10 h-10 border-2 border-gray-300 bg-white text-gray-500 hover:bg-sky-200 m-1 text-2xl flex justify-center items-center`}
+          title="Switch input/label mode"
+        >
+          {isLabelMode ? <TbNumber123 /> : <MdInput />}
         </button>
       </div>
       <div className={!hidden ? 'hidden' : ''}></div>

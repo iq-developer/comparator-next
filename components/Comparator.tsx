@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, MouseEvent, useEffect } from 'react';
+import React, { useState, MouseEvent, TouchEvent, useEffect } from 'react';
 import Block from './Block';
 import BlockGenerator from './BlockGenerator';
 import Controls from './Controls';
@@ -19,9 +19,12 @@ const Comparator: React.FC = () => {
   const [leftStack, setLeftStack] = useState<number>(0);
   const [rightStack, setRightStack] = useState<number>(0);
   const [finished, setFinished] = useState(false);
+  const [isLabelMode, setIsLabelMode] = useState(true);
 
   // Handlers
-  const handleMouseDown = (e: MouseEvent<HTMLButtonElement>) => {
+  const handleMouseDown = (
+    e: MouseEvent<HTMLButtonElement> | TouchEvent<HTMLButtonElement>
+  ) => {
     const buttonId = (e.target as HTMLButtonElement).id;
     if (startButton || !buttonId) return;
 
@@ -33,7 +36,9 @@ const Comparator: React.FC = () => {
     });
   };
 
-  const handleMouseUp = (e: MouseEvent<HTMLDivElement>) => {
+  const handleMouseUp = (
+    e: MouseEvent<HTMLDivElement> | TouchEvent<HTMLDivElement>
+  ) => {
     if (!startButton) return;
 
     const buttonId = (e.target as HTMLButtonElement).id;
@@ -76,12 +81,17 @@ const Comparator: React.FC = () => {
     setStartButton(null);
   };
 
-  const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
+  const handleMouseMove = (
+    e: MouseEvent<HTMLDivElement> | TouchEvent<HTMLDivElement>
+  ) => {
     if (!startButton) return;
 
+    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+    const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
+
     const line = document.getElementById('in-progress-line')!;
-    line.setAttribute('x2', e.clientX.toString());
-    line.setAttribute('y2', e.clientY.toString());
+    line.setAttribute('x2', clientX.toString());
+    line.setAttribute('y2', clientY.toString());
   };
 
   const handleUpdateLines = (connected?: 'start' | 'end' | 'equal') => {
@@ -283,6 +293,8 @@ const Comparator: React.FC = () => {
       role="application"
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
+      onTouchMove={handleMouseMove}
+      onTouchEnd={handleMouseUp}
     >
       <svg className="absolute top-0 left-0 w-full h-full pointer-events-none">
         {lines.map((line, index) => (
@@ -311,14 +323,24 @@ const Comparator: React.FC = () => {
 
       <div className="w-[700px] h-[600px] bg-white flex flex-col bg">
         <div className="grid grid-cols-3 h-1/6  pt-5">
-          <BlockGenerator stack={leftStack} setStack={setLeftStack} />
+          <BlockGenerator
+            stack={leftStack}
+            setStack={setLeftStack}
+            isLabelMode={isLabelMode}
+          />
           <Controls
             handlePlayAnimation={handlePlayAnimation}
             handleSwitchLines={handleSwitchLines}
             lines={lines}
             hidden={leftStack === 0 && rightStack === 0}
+            isLabelMode={isLabelMode}
+            setIsLabelMode={() => setIsLabelMode(!isLabelMode)}
           />
-          <BlockGenerator stack={rightStack} setStack={setRightStack} />
+          <BlockGenerator
+            stack={rightStack}
+            setStack={setRightStack}
+            isLabelMode={isLabelMode}
+          />
         </div>
 
         <div className="grid grid-cols-3 h-5/6">

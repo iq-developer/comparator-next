@@ -11,6 +11,7 @@ const Block: React.FC<BlockProps> = ({ handleRemoveBlock, finished }) => {
     <button
       className="w-5 h-5 mb-4 block-appearance"
       onClick={handleRemoveBlock}
+      title="Click to remove block"
     >
       <div className={`cube ${finished ? 'block-finished' : ''}`}>
         <div className="face top"></div>

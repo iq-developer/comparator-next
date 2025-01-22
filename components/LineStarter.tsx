@@ -26,6 +26,7 @@ const LineStarter: React.FC<ControlsProps> = ({
       } ${hidden ? 'hidden' : ''}`}
       onMouseDown={handleMouseDown}
       disabled={isButtonDisabled(id)}
+      title="Drag to create a new line"
     >
       {id.includes('1') ? '⇢' : '⇠'}
     </button>
