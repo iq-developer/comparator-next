@@ -1,6 +1,6 @@
 @keyframes turn {
   from { transform: rotate3d(0, 0, 0, 0); }
-  to { transform: rotate3d(1, 1, 0, 360deg); }
+  to { transform: rotate3d(1, 1, 1, 360deg); }
 }
 
 @keyframes blockAppearance {
@@ -14,6 +14,10 @@
   }
 }
 
+.block-finished {
+  animation: turn 20s linear infinite;
+}
+
 .block-appearance {
   animation: blockAppearance 0.5s ease-out;
 }
@@ -24,7 +28,7 @@
   height: 30px;
   transform-style: preserve-3d;
   transform: rotate3d(0.5, 0.9, -0.2, -52deg);
-  /* animation: turn 5s linear infinite; */
+
 }
 
 .face {

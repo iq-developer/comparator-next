@@ -3,15 +3,16 @@ import './Block.css';
 
 interface BlockProps {
   handleRemoveBlock: () => void;
+  finished: boolean;
 }
 
-const Block: React.FC<BlockProps> = ({ handleRemoveBlock }) => {
+const Block: React.FC<BlockProps> = ({ handleRemoveBlock, finished }) => {
   return (
     <button
       className="w-5 h-5 mb-4 block-appearance"
       onClick={handleRemoveBlock}
     >
-      <div className="cube">
+      <div className={`cube ${finished ? 'block-finished' : ''}`}>
         <div className="face top"></div>
         <div className="face bottom"></div>
         <div className="face left"></div>

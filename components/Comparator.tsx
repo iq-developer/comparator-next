@@ -333,6 +333,7 @@ const Comparator: React.FC = () => {
               <Block
                 key={index}
                 handleRemoveBlock={() => setLeftStack(leftStack - 1)}
+                finished={finished}
               />
             ))}
             <LineStarter
@@ -360,6 +361,7 @@ const Comparator: React.FC = () => {
               <Block
                 key={index}
                 handleRemoveBlock={() => setRightStack(rightStack - 1)}
+                finished={finished}
               />
             ))}
             <LineStarter
