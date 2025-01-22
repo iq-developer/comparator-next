@@ -18,6 +18,7 @@ const Comparator: React.FC = () => {
   const [lines, setLines] = useState<Line[]>([]);
   const [leftStack, setLeftStack] = useState<number>(0);
   const [rightStack, setRightStack] = useState<number>(0);
+  const [finished, setFinished] = useState(false);
 
   // Handlers
   const handleMouseDown = (e: MouseEvent<HTMLButtonElement>) => {
@@ -89,7 +90,7 @@ const Comparator: React.FC = () => {
     const bottom1 = document.getElementById('bottom1')!.getBoundingClientRect();
     const bottom2 = document.getElementById('bottom2')!.getBoundingClientRect();
 
-    const initialLines: Line[] = [
+    const autoLines: Line[] = [
       {
         start: {
           id: 'top1',
@@ -116,26 +117,27 @@ const Comparator: React.FC = () => {
       },
     ];
 
+    console.log('initialLines:', autoLines);
+
     if (connected === 'start') {
-      const averageStartY =
-        (initialLines[0].start.y + initialLines[1].start.y) / 2;
+      const averageStartY = (autoLines[0].start.y + autoLines[1].start.y) / 2;
       const connectedStartLines: Line[] = [
         {
           start: {
-            ...initialLines[0].start,
+            ...autoLines[0].start,
             y: averageStartY,
           },
           end: {
-            ...initialLines[0].end,
+            ...autoLines[0].end,
           },
         },
         {
           start: {
-            ...initialLines[1].start,
+            ...autoLines[1].start,
             y: averageStartY,
           },
           end: {
-            ...initialLines[1].end,
+            ...autoLines[1].end,
           },
         },
       ];
@@ -144,34 +146,70 @@ const Comparator: React.FC = () => {
     }
 
     if (connected === 'end') {
-      const averageEndY = (initialLines[0].end.y + initialLines[1].end.y) / 2;
+      const averageEndY = (autoLines[0].end.y + autoLines[1].end.y) / 2;
       const connectedEndLines: Line[] = [
         {
           start: {
-            ...initialLines[0].start,
+            ...autoLines[0].start,
           },
           end: {
-            ...initialLines[0].end,
+            ...autoLines[0].end,
             y: averageEndY,
           },
         },
         {
           start: {
-            ...initialLines[1].start,
+            ...autoLines[1].start,
           },
           end: {
-            ...initialLines[1].end,
+            ...autoLines[1].end,
             y: averageEndY,
           },
         },
       ];
       console.log('connectedEndLines:', connectedEndLines);
 
-      setLines(connectedEndLines);
+      // Calculate the center of the lines
+      const centerX = (autoLines[0].start.x + autoLines[1].end.x) / 2;
+      const centerY = (autoLines[0].start.y + autoLines[1].end.y) / 2;
+
+      console.log('centerX:', centerX);
+      console.log('centerY:', centerY);
+
+      //TODO: Refactor this
+
+      // Apply scaleFactor 7 times (each 100 msec)
+      const applyScale = (
+        lines: Line[],
+        scaleFactor: number,
+        times: number
+      ) => {
+        if (times === 0) return lines;
+
+        const scaledLines = lines.map((line) => ({
+          start: {
+            id: line.start.id,
+            x: centerX + (line.start.x - centerX) * scaleFactor,
+            y: centerY + (line.start.y - centerY) * scaleFactor,
+          },
+          end: {
+            id: line.end.id,
+            x: centerX + (line.end.x - centerX) * scaleFactor,
+            y: centerY + (line.end.y - centerY) * scaleFactor,
+          },
+        }));
+
+        setTimeout(() => {
+          setLines(scaledLines);
+          applyScale(scaledLines, scaleFactor, times - 1);
+        }, 50);
+      };
+
+      applyScale(connectedEndLines, 0.8, 7);
       return;
     }
 
-    setLines(initialLines);
+    setLines(autoLines);
   };
 
   const handleSwitchLines = () => {
@@ -207,7 +245,20 @@ const Comparator: React.FC = () => {
     } else {
       console.log('Distances are equal');
     }
+
+    // Apply opacity 0 to lines
+    const svgLines = document.querySelectorAll('line');
+    svgLines.forEach((line) => {
+      line.style.transition = 'opacity 0.5s';
+      line.style.opacity = '0';
+    });
+
+    // Change color of ComparatorSign after 0.5 sec
+    setTimeout(() => {
+      setFinished(true);
+    }, 500);
   };
+
   useEffect(() => {
     if (lines.length === 0) return;
     handleUpdateLines();
@@ -279,7 +330,11 @@ const Comparator: React.FC = () => {
             />
           </div>
           <div className="flex items-center justify-center">
-            <ComparatorSign leftStack={leftStack} rightStack={rightStack} />
+            <ComparatorSign
+              leftStack={leftStack}
+              rightStack={rightStack}
+              finished={finished}
+            />
           </div>
           <div className="flex flex-col-reverse items-center justify-center">
             <LineStarter
