@@ -84,7 +84,7 @@ const Comparator: React.FC = () => {
     line.setAttribute('y2', e.clientY.toString());
   };
 
-  const handleUpdateLines = (connected?: 'start' | 'end') => {
+  const handleUpdateLines = (connected?: 'start' | 'end' | 'equal') => {
     const top1 = document.getElementById('top1')!.getBoundingClientRect();
     const top2 = document.getElementById('top2')!.getBoundingClientRect();
     const bottom1 = document.getElementById('bottom1')!.getBoundingClientRect();
@@ -117,7 +117,37 @@ const Comparator: React.FC = () => {
       },
     ];
 
-    console.log('initialLines:', autoLines);
+    // Calculate the center of the lines
+    const centerX = (autoLines[0].start.x + autoLines[1].end.x) / 2;
+    const centerY = (autoLines[0].start.y + autoLines[1].end.y) / 2;
+
+    console.log('centerX:', centerX);
+    console.log('centerY:', centerY);
+
+    //TODO: Refactor this
+
+    // Apply scaleFactor 7 times (each 100 msec)
+    const applyScale = (lines: Line[], scaleFactor: number, times: number) => {
+      if (times === 0) return lines;
+
+      const scaledLines = lines.map((line) => ({
+        start: {
+          id: line.start.id,
+          x: centerX + (line.start.x - centerX) * scaleFactor,
+          y: centerY + (line.start.y - centerY) * scaleFactor,
+        },
+        end: {
+          id: line.end.id,
+          x: centerX + (line.end.x - centerX) * scaleFactor,
+          y: centerY + (line.end.y - centerY) * scaleFactor,
+        },
+      }));
+
+      setTimeout(() => {
+        setLines(scaledLines);
+        applyScale(scaledLines, scaleFactor, times - 1);
+      }, 50);
+    };
 
     if (connected === 'start') {
       const averageStartY = (autoLines[0].start.y + autoLines[1].start.y) / 2;
@@ -141,7 +171,8 @@ const Comparator: React.FC = () => {
           },
         },
       ];
-      setLines(connectedStartLines);
+
+      applyScale(connectedStartLines, 0.8, 5);
       return;
     }
 
@@ -167,45 +198,13 @@ const Comparator: React.FC = () => {
           },
         },
       ];
-      console.log('connectedEndLines:', connectedEndLines);
 
-      // Calculate the center of the lines
-      const centerX = (autoLines[0].start.x + autoLines[1].end.x) / 2;
-      const centerY = (autoLines[0].start.y + autoLines[1].end.y) / 2;
+      applyScale(connectedEndLines, 0.8, 5);
+      return;
+    }
 
-      console.log('centerX:', centerX);
-      console.log('centerY:', centerY);
-
-      //TODO: Refactor this
-
-      // Apply scaleFactor 7 times (each 100 msec)
-      const applyScale = (
-        lines: Line[],
-        scaleFactor: number,
-        times: number
-      ) => {
-        if (times === 0) return lines;
-
-        const scaledLines = lines.map((line) => ({
-          start: {
-            id: line.start.id,
-            x: centerX + (line.start.x - centerX) * scaleFactor,
-            y: centerY + (line.start.y - centerY) * scaleFactor,
-          },
-          end: {
-            id: line.end.id,
-            x: centerX + (line.end.x - centerX) * scaleFactor,
-            y: centerY + (line.end.y - centerY) * scaleFactor,
-          },
-        }));
-
-        setTimeout(() => {
-          setLines(scaledLines);
-          applyScale(scaledLines, scaleFactor, times - 1);
-        }, 50);
-      };
-
-      applyScale(connectedEndLines, 0.8, 7);
+    if (connected === 'equal') {
+      applyScale(autoLines, 0.8, 5);
       return;
     }
 
@@ -243,21 +242,19 @@ const Comparator: React.FC = () => {
     } else if (distance1 < distance2) {
       handleUpdateLines('start');
     } else {
-      console.log('Distances are equal');
+      handleUpdateLines('equal');
     }
 
-    // Apply opacity 0 to lines
     const svgLines = document.querySelectorAll('line');
     svgLines.forEach((line) => {
       line.style.transition = 'opacity 0.5s';
       line.style.opacity = '0';
     });
 
-    // Change color of ComparatorSign after 0.5 sec
     setTimeout(() => {
       setFinished(true);
       setLines([]);
-    }, 500);
+    }, 300);
   };
 
   useEffect(() => {
