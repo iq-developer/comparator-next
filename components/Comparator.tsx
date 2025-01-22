@@ -256,6 +256,7 @@ const Comparator: React.FC = () => {
     // Change color of ComparatorSign after 0.5 sec
     setTimeout(() => {
       setFinished(true);
+      setLines([]);
     }, 500);
   };
 
@@ -263,6 +264,11 @@ const Comparator: React.FC = () => {
     if (lines.length === 0) return;
     handleUpdateLines();
   }, [leftStack, rightStack]);
+
+  useEffect(() => {
+    if (lines.length === 0) return;
+    setFinished(false);
+  }, [lines]);
 
   return (
     <div

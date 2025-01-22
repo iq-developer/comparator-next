@@ -25,7 +25,7 @@ const Controls: React.FC<ControlsProps> = ({
           onClick={handleSwitchLines}
           className={`w-10 h-10 border-2 border-gray-300 bg-white text-gray-600 hover:bg-sky-200 m-1`}
         >
-          {lines?.length === 0 ? '(o)' : '()'}
+          {lines?.length === 0 ? ')' : '(o)'}
         </button>
 
         <button
