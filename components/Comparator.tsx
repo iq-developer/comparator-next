@@ -117,31 +117,40 @@ const Comparator: React.FC = () => {
       },
     ];
 
-    // Calculate the center of the lines
-    const centerX = (autoLines[0].start.x + autoLines[1].end.x) / 2;
-    const centerY = (autoLines[0].start.y + autoLines[1].end.y) / 2;
+    const centerX = (autoLines[0].start.x + autoLines[0].end.x) / 2;
+    const centerY = (autoLines[0].start.y + autoLines[1].start.y) / 2;
 
-    console.log('centerX:', centerX);
-    console.log('centerY:', centerY);
-
-    //TODO: Refactor this
-
-    // Apply scaleFactor 7 times (each 100 msec)
     const applyScale = (lines: Line[], scaleFactor: number, times: number) => {
       if (times === 0) return lines;
 
-      const scaledLines = lines.map((line) => ({
-        start: {
-          id: line.start.id,
-          x: centerX + (line.start.x - centerX) * scaleFactor,
-          y: centerY + (line.start.y - centerY) * scaleFactor,
-        },
-        end: {
-          id: line.end.id,
-          x: centerX + (line.end.x - centerX) * scaleFactor,
-          y: centerY + (line.end.y - centerY) * scaleFactor,
-        },
-      }));
+      const minYDistance = leftStack === rightStack ? 14 : 26;
+
+      const scaledLines = lines.map((line) => {
+        const scaledStartY = centerY + (line.start.y - centerY) * scaleFactor;
+        const limitedStartY =
+          Math.abs(centerY - scaledStartY) < minYDistance && scaledStartY !== 0
+            ? line.start.y
+            : scaledStartY;
+
+        const scaledEndY = centerY + (line.end.y - centerY) * scaleFactor;
+        const limitedEndY =
+          Math.abs(centerY - scaledEndY) < minYDistance && scaledEndY !== 0
+            ? line.end.y
+            : scaledEndY;
+
+        return {
+          start: {
+            id: line.start.id,
+            x: centerX + (line.start.x - centerX) * scaleFactor,
+            y: limitedStartY,
+          },
+          end: {
+            id: line.end.id,
+            x: centerX + (line.end.x - centerX) * scaleFactor,
+            y: limitedEndY,
+          },
+        };
+      });
 
       setTimeout(() => {
         setLines(scaledLines);
@@ -172,7 +181,7 @@ const Comparator: React.FC = () => {
         },
       ];
 
-      applyScale(connectedStartLines, 0.8, 5);
+      applyScale(connectedStartLines, 0.75, 7);
       return;
     }
 
@@ -199,12 +208,12 @@ const Comparator: React.FC = () => {
         },
       ];
 
-      applyScale(connectedEndLines, 0.8, 5);
+      applyScale(connectedEndLines, 0.75, 7);
       return;
     }
 
     if (connected === 'equal') {
-      applyScale(autoLines, 0.8, 5);
+      applyScale(autoLines, 0.75, 7);
       return;
     }
 
@@ -249,12 +258,13 @@ const Comparator: React.FC = () => {
     svgLines.forEach((line) => {
       line.style.transition = 'opacity 0.5s';
       line.style.opacity = '0';
+      line.style.transitionTimingFunction = 'ease-in';
     });
 
     setTimeout(() => {
       setFinished(true);
       setLines([]);
-    }, 300);
+    }, 400);
   };
 
   useEffect(() => {
