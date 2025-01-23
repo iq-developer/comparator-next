@@ -21,7 +21,7 @@ const Block: React.FC<BlockProps> = ({
 }) => {
   const [{ isDragging }, drag] = useDrag(() => ({
     type: ItemTypes.BOX,
-    item: 'left-block',
+    item: 'block',
     end: (item, monitor) => {
       const dropResult = monitor.getDropResult<DropResult>();
       if (item && dropResult) {
@@ -36,9 +36,12 @@ const Block: React.FC<BlockProps> = ({
 
   const opacity = isDragging ? 0.4 : 1;
 
+  const buttonRef = React.useRef<HTMLButtonElement>(null);
+  drag(buttonRef);
+
   return (
     <button
-      ref={drag}
+      ref={buttonRef}
       style={{ opacity }}
       data-testid={`box`}
       className="w-5 h-5 mb-4 block-appearance"

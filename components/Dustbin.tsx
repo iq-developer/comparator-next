@@ -1,3 +1,4 @@
+import React from 'react';
 import type { FC } from 'react';
 import { useDrop } from 'react-dnd';
 import { ItemTypes } from './ItemTypes';
@@ -23,9 +24,12 @@ export const Dustbin: FC = () => {
     zIndex = 'z-10';
   }
 
+  const buttonRef = React.useRef<HTMLDivElement>(null);
+  drop(buttonRef);
+
   return (
     <div
-      ref={drop}
+      ref={buttonRef}
       className={`absolute top-0 h-36 w-full text-white p-4 text-center text-base leading-normal opacity-50 ${backgroundColor} ${zIndex}`}
       data-testid="dustbin"
     >
