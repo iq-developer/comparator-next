@@ -43,10 +43,6 @@ const Comparator: React.FC = () => {
   const handleMouseUp = (
     e: MouseEvent<HTMLButtonElement> | TouchEvent<HTMLButtonElement>
   ) => {
-    console.log('startButton:', startButton);
-    console.log('e.nativeEvent):', e.nativeEvent);
-    console.log('e.type:', e.type);
-
     if (!startButton) return;
 
     const target =
@@ -91,8 +87,6 @@ const Comparator: React.FC = () => {
             start: endButton,
             end: startButton,
           };
-
-    console.log('5 newLine:', newLine);
 
     setLines([...lines, newLine]);
     setStartButton(null);

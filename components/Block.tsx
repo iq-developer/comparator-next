@@ -10,6 +10,10 @@ interface BlockProps {
   finished: boolean;
 }
 
+interface DropResult {
+  name: string;
+}
+
 const Block: React.FC<BlockProps> = ({
   handleRemoveBlock,
   handleAddBlock,
