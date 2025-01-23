@@ -9,16 +9,18 @@ So I selected:
 - HTML/CSS (Tailwind)
 - React (you also have Next, so I move code to Next.js)
 - Git (with Github)
-- Animation library (Motion.dev)
 
-You doesn't have responsive design, and so did I
+Your App's widgets doesn't have responsive design, and so didn't developed it now
+Fixed layout:
 
 - width: 700px
 - height: 600px
 
-## Note
+## Features
 
-bottom and top id are switched because of col-reverse
+### Notes
+
+bottom and top blocks are switched to to display each higher block higher
 
 ## To run the project
 

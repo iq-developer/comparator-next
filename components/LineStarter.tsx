@@ -25,6 +25,9 @@ const LineStarter: React.FC<ControlsProps> = ({
         isButtonDisabled(id) ? 'opacity-0' : ''
       } ${hidden ? 'hidden' : ''}`}
       onMouseDown={handleMouseDown}
+      onTouchStart={
+        handleMouseDown as unknown as React.TouchEventHandler<HTMLButtonElement>
+      }
       disabled={isButtonDisabled(id)}
       title="Drag to create a new line"
     >
