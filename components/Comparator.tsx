@@ -7,6 +7,10 @@ import Controls from './Controls';
 import LineStarter from './LineStarter';
 import ComparatorSign from './ComparatorSign';
 import type { Line } from '../types';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+import { Dustbin } from './Dustbin';
+import AddBlockPlace from './AddBlockPlace';
 
 const Comparator: React.FC = () => {
   // State
@@ -301,119 +305,147 @@ const Comparator: React.FC = () => {
   }, [lines]);
 
   return (
-    <div
-      className="flex justify-center flex-col items-center h-screen bg-gray-100"
-      role="application"
-      onMouseMove={handleMouseMove}
-      onMouseUp={() => setStartButton(null)}
-      onTouchMove={handleMouseMove}
-      onTouchEnd={() => setStartButton(null)}
-    >
-      <svg className="absolute top-0 left-0 w-full h-full pointer-events-none">
-        {lines.map((line, index) => (
-          <line
-            key={index}
-            x1={line.start.x}
-            y1={line.start.y}
-            x2={line.end.x}
-            y2={line.end.y}
-            stroke="#0ea5e9"
-            strokeWidth="8"
-          />
-        ))}
-        {startButton && (
-          <line
-            id="in-progress-line"
-            x1={startButton.x}
-            y1={startButton.y}
-            x2={startButton.x}
-            y2={startButton.y}
-            stroke="#0ea5e9"
-            strokeWidth="8"
-          />
-        )}
-      </svg>
-
-      <div className="w-[700px] h-[600px] bg-white flex flex-col bg">
-        <div className="grid grid-cols-3 h-1/6  pt-5">
-          <BlockGenerator
-            stack={leftStack}
-            setStack={setLeftStack}
-            isLabelMode={isLabelMode}
-          />
-          <Controls
-            handlePlayAnimation={handlePlayAnimation}
-            handleSwitchLines={handleSwitchLines}
-            lines={lines}
-            hidden={leftStack === 0 && rightStack === 0}
-            isLabelMode={isLabelMode}
-            setIsLabelMode={() => setIsLabelMode(!isLabelMode)}
-          />
-          <BlockGenerator
-            stack={rightStack}
-            setStack={setRightStack}
-            isLabelMode={isLabelMode}
-          />
-        </div>
-
-        <div className="grid grid-cols-3 h-5/6">
-          <div className="flex flex-col-reverse items-center justify-center">
-            <LineStarter
-              handleMouseDown={handleMouseDown}
-              handleMouseUp={handleMouseUp}
-              lines={lines}
-              id="bottom1"
-              hidden={leftStack === 0 && rightStack === 0}
+    <DndProvider backend={HTML5Backend}>
+      <div
+        className="flex justify-center flex-col items-center h-screen bg-gray-100"
+        role="application"
+        onMouseMove={handleMouseMove}
+        onMouseUp={() => setStartButton(null)}
+        onTouchMove={handleMouseMove}
+        onTouchEnd={() => setStartButton(null)}
+      >
+        <svg className="absolute top-0 left-0 w-full h-full pointer-events-none">
+          {lines.map((line, index) => (
+            <line
+              key={index}
+              x1={line.start.x}
+              y1={line.start.y}
+              x2={line.end.x}
+              y2={line.end.y}
+              stroke="#0ea5e9"
+              strokeWidth="8"
             />
-            {[...Array(leftStack)].map((_, index) => (
-              <Block
-                key={index}
-                handleRemoveBlock={() => setLeftStack(leftStack - 1)}
+          ))}
+          {startButton && (
+            <line
+              id="in-progress-line"
+              x1={startButton.x}
+              y1={startButton.y}
+              x2={startButton.x}
+              y2={startButton.y}
+              stroke="#0ea5e9"
+              strokeWidth="8"
+            />
+          )}
+        </svg>
+
+        <div className="w-[700px] h-[600px] bg-white flex flex-col bg">
+          <div className="grid grid-cols-3 h-1/6  pt-5">
+            <BlockGenerator
+              stack={leftStack}
+              setStack={setLeftStack}
+              isLabelMode={isLabelMode}
+            />
+            <Controls
+              handlePlayAnimation={handlePlayAnimation}
+              handleSwitchLines={handleSwitchLines}
+              lines={lines}
+              hidden={leftStack === 0 && rightStack === 0}
+              isLabelMode={isLabelMode}
+              setIsLabelMode={() => setIsLabelMode(!isLabelMode)}
+            />
+            <BlockGenerator
+              stack={rightStack}
+              setStack={setRightStack}
+              isLabelMode={isLabelMode}
+            />
+          </div>
+
+          <div className="grid grid-cols-3 h-5/6">
+            <div className="flex flex-col-reverse items-center justify-center">
+              <LineStarter
+                handleMouseDown={handleMouseDown}
+                handleMouseUp={handleMouseUp}
+                lines={lines}
+                id="bottom1"
+                hidden={leftStack === 0 && rightStack === 0}
+              />
+              {[...Array(leftStack)].map((_, index) => (
+                <Block
+                  key={index}
+                  handleRemoveBlock={() => setLeftStack(leftStack - 1)}
+                  handleAddBlock={() =>
+                    setLeftStack(leftStack <= 10 ? leftStack + 1 : leftStack)
+                  }
+                  finished={finished}
+                />
+              ))}
+              {leftStack === 0 && (
+                <AddBlockPlace
+                  handleAddBlock={() =>
+                    setLeftStack(leftStack <= 10 ? leftStack + 1 : leftStack)
+                  }
+                />
+              )}
+              <LineStarter
+                handleMouseDown={handleMouseDown}
+                handleMouseUp={handleMouseUp}
+                lines={lines}
+                id="top1"
+                hidden={leftStack === 0 && rightStack === 0}
+              />
+            </div>
+            <div className="flex items-center justify-center">
+              <ComparatorSign
+                leftStack={leftStack}
+                rightStack={rightStack}
                 finished={finished}
               />
-            ))}
-            <LineStarter
-              handleMouseDown={handleMouseDown}
-              handleMouseUp={handleMouseUp}
-              lines={lines}
-              id="top1"
-              hidden={leftStack === 0 && rightStack === 0}
-            />
-          </div>
-          <div className="flex items-center justify-center">
-            <ComparatorSign
-              leftStack={leftStack}
-              rightStack={rightStack}
-              finished={finished}
-            />
-          </div>
-          <div className="flex flex-col-reverse items-center justify-center">
-            <LineStarter
-              handleMouseDown={handleMouseDown}
-              handleMouseUp={handleMouseUp}
-              lines={lines}
-              id="bottom2"
-              hidden={leftStack === 0 && rightStack === 0}
-            />
-            {[...Array(rightStack)].map((_, index) => (
-              <Block
-                key={index}
-                handleRemoveBlock={() => setRightStack(rightStack - 1)}
-                finished={finished}
+            </div>
+            <div className="flex flex-col-reverse items-center justify-center">
+              <LineStarter
+                handleMouseDown={handleMouseDown}
+                handleMouseUp={handleMouseUp}
+                lines={lines}
+                id="bottom2"
+                hidden={leftStack === 0 && rightStack === 0}
               />
-            ))}
-            <LineStarter
-              handleMouseDown={handleMouseDown}
-              handleMouseUp={handleMouseUp}
-              lines={lines}
-              id="top2"
-              hidden={leftStack === 0 && rightStack === 0}
-            />
+              {[...Array(rightStack)].map((_, index) => (
+                <Block
+                  key={index}
+                  handleRemoveBlock={() => setRightStack(rightStack - 1)}
+                  handleAddBlock={() =>
+                    setRightStack(
+                      rightStack <= 10 ? rightStack + 1 : rightStack
+                    )
+                  }
+                  finished={finished}
+                />
+              ))}
+              {rightStack === 0 && (
+                <AddBlockPlace
+                  handleAddBlock={() =>
+                    setRightStack(
+                      rightStack <= 10 ? rightStack + 1 : rightStack
+                    )
+                  }
+                />
+              )}
+              <LineStarter
+                handleMouseDown={handleMouseDown}
+                handleMouseUp={handleMouseUp}
+                lines={lines}
+                id="top2"
+                hidden={leftStack === 0 && rightStack === 0}
+              />
+            </div>
           </div>
         </div>
+        <Dustbin />
+
+        <div className="absolute text-gray-400 bottom-0 right-1">v 1.2</div>
       </div>
-      <div className="absolute text-gray-400 bottom-0 right-1">v 1.1</div>
-    </div>
+    </DndProvider>
   );
 };
 

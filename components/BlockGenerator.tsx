@@ -23,10 +23,11 @@ const BlockGenerator: React.FC<BlockGeneratorProps> = ({
       <button
         onClick={() => setStack(stack > 0 ? stack - 1 : stack)}
         className={`w-10 h-10 bg-white text-gray-600 border-gray-300 border-2 ml-[-2px] text-xl  ${
-          stack === 0 ? 'opacity-50 bg-gray-200' : ' hover:bg-sky-200'
+          stack === 0 ? 'opacity-40 bg-gray-300' : ' hover:bg-sky-200'
         }`}
         disabled={stack === 0}
         title="Minus one block"
+        hidden={isLabelMode}
       >
         -
       </button>
@@ -49,10 +50,11 @@ const BlockGenerator: React.FC<BlockGeneratorProps> = ({
       <button
         onClick={() => setStack(stack < 10 ? stack + 1 : stack)}
         className={`w-10 h-10 bg-white text-gray-600 border-gray-300 border-2 ml-[-2px] text-xl  ${
-          stack === 10 ? 'opacity-50 bg-gray-200' : ' hover:bg-sky-200'
+          stack === 10 ? 'opacity-40 bg-gray-300' : ' hover:bg-sky-200'
         }`}
         disabled={stack === 10}
         title="Plus one block"
+        hidden={isLabelMode}
       >
         +
       </button>

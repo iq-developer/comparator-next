@@ -43,7 +43,7 @@ const Controls: React.FC<ControlsProps> = ({
           disabled={lines?.length < 2}
           className={`w-10 h-10 text-xl text-white m-1 flex justify-center items-center  ${
             lines?.length < 2
-              ? 'opacity-50 bg-gray-200 border-gray-300 border-2'
+              ? 'opacity-40 bg-gray-300 border-gray-300 border-2'
               : 'bg-sky-500 hover:bg-sky-600'
           }`}
           title="Play final animation"
