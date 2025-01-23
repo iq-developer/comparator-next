@@ -7,8 +7,8 @@ import Controls from './Controls';
 import LineStarter from './LineStarter';
 import ComparatorSign from './ComparatorSign';
 import type { Line } from '../types';
+import { TouchBackend } from 'react-dnd-touch-backend';
 import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
 import { Dustbin } from './Dustbin';
 import AddBlockPlace from './AddBlockPlace';
 
@@ -299,7 +299,7 @@ const Comparator: React.FC = () => {
   }, [lines]);
 
   return (
-    <DndProvider backend={HTML5Backend}>
+    <DndProvider backend={TouchBackend}>
       <div
         className="flex justify-center flex-col items-center h-screen bg-gray-100"
         role="application"

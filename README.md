@@ -18,9 +18,28 @@ Fixed layout:
 
 ## Features
 
+All features, described in Example Widget Spec
+Also tested on mobile devices
+
+Additionally:
+
+- there is a butons to start/finish lines (on my UX test we need some visual hint, not just bottom and top of the stack)
+- there is additional area displayed to remove block
+
+## Further features
+
+- Unit tests
+- Responsive design
+- Sounds
+- More animations
+- Dark theme
+
 ### Notes
 
-bottom and top blocks are switched to to display each higher block higher
+Bottom and top blocks are switched to to display each higher block higher
+
+Project was migrated to Next in the middle part of development.
+If you wish to see first commits - go to https://github.com/iq-developer/comparator
 
 ## To run the project
 
