@@ -19,20 +19,21 @@ Fixed layout:
 ## Features
 
 All features, described in Example Widget Spec
-Also tested on mobile devices
+Also tested on mobile devices with touch screen
 
 Additionally:
 
 - there is a butons to start/finish lines (on my UX test we need some visual hint, not just bottom and top of the stack)
-- there is additional area displayed to remove block
+- there is additional area displayed on the top of screen to remove block
 
 ## Further features
 
 - Unit tests
 - Responsive design
 - Sounds
-- More animations
-- Dark theme
+- More animations (block diasppearance and others)
+- Dark theme (or more robust futuristic neon theme)
+- May be try drag-n-drop library to have a better UX on touch screens
 
 ### Notes
 

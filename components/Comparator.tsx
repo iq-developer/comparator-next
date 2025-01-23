@@ -369,7 +369,7 @@ const Comparator: React.FC = () => {
                   key={index}
                   handleRemoveBlock={() => setLeftStack(leftStack - 1)}
                   handleAddBlock={() =>
-                    setLeftStack(leftStack <= 10 ? leftStack + 1 : leftStack)
+                    setLeftStack(leftStack < 10 ? leftStack + 1 : leftStack)
                   }
                   finished={finished}
                 />
@@ -377,7 +377,7 @@ const Comparator: React.FC = () => {
               {leftStack === 0 && (
                 <AddBlockPlace
                   handleAddBlock={() =>
-                    setLeftStack(leftStack <= 10 ? leftStack + 1 : leftStack)
+                    setLeftStack(leftStack < 10 ? leftStack + 1 : leftStack)
                   }
                 />
               )}
@@ -409,9 +409,7 @@ const Comparator: React.FC = () => {
                   key={index}
                   handleRemoveBlock={() => setRightStack(rightStack - 1)}
                   handleAddBlock={() =>
-                    setRightStack(
-                      rightStack <= 10 ? rightStack + 1 : rightStack
-                    )
+                    setRightStack(rightStack < 10 ? rightStack + 1 : rightStack)
                   }
                   finished={finished}
                 />
@@ -419,9 +417,7 @@ const Comparator: React.FC = () => {
               {rightStack === 0 && (
                 <AddBlockPlace
                   handleAddBlock={() =>
-                    setRightStack(
-                      rightStack <= 10 ? rightStack + 1 : rightStack
-                    )
+                    setRightStack(rightStack < 10 ? rightStack + 1 : rightStack)
                   }
                 />
               )}
