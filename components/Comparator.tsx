@@ -9,7 +9,7 @@ import ComparatorSign from './ComparatorSign';
 import type { Line } from '../types';
 
 const Comparator: React.FC = () => {
-  // State management
+  // State
   const [startButton, setStartButton] = useState<{
     id: string;
     x: number;
@@ -21,19 +21,14 @@ const Comparator: React.FC = () => {
   const [finished, setFinished] = useState(false);
   const [isLabelMode, setIsLabelMode] = useState(true);
 
-  // Start event handler for mouse/touch
-  const handleStart = (
+  // Handlers
+  const handleMouseDown = (
     e: MouseEvent<HTMLButtonElement> | TouchEvent<HTMLButtonElement>
   ) => {
-    e.preventDefault();
+    const buttonId = (e.target as HTMLButtonElement).id;
+    if (startButton || !buttonId) return;
 
-    const target = e.target as HTMLButtonElement | null;
-    if (!target || startButton) return;
-
-    const buttonId = target.id;
-    if (!buttonId) return;
-
-    const rect = target.getBoundingClientRect();
+    const rect = (e.target as HTMLButtonElement).getBoundingClientRect();
     setStartButton({
       id: buttonId,
       x: rect.left + rect.width / 2,
@@ -41,19 +36,28 @@ const Comparator: React.FC = () => {
     });
   };
 
-  // End event handler for mouse/touch
-  const handleEnd = (
-    e: MouseEvent<HTMLDivElement> | TouchEvent<HTMLDivElement>
+  const handleMouseUp = (
+    e: MouseEvent<HTMLButtonElement> | TouchEvent<HTMLButtonElement>
   ) => {
-    e.preventDefault();
+    console.log('startButton:', startButton);
+    console.log('e.nativeEvent):', e.nativeEvent);
+    console.log('e.type:', e.type);
 
     if (!startButton) return;
 
-    const target = e.target as HTMLButtonElement | null;
+    const target =
+      e.type === 'touchend'
+        ? document.elementFromPoint(
+            (e as TouchEvent<HTMLButtonElement>).changedTouches[0].clientX,
+            (e as TouchEvent<HTMLButtonElement>).changedTouches[0].clientY
+          )
+        : (e.target as HTMLButtonElement);
+
     if (!target || !target.id || target.id === startButton.id) {
       setStartButton(null);
       return;
     }
+
     const isCorrectLine =
       (startButton.id === 'top1' && target.id === 'top2') ||
       (startButton.id === 'bottom1' && target.id === 'bottom2') ||
@@ -64,7 +68,9 @@ const Comparator: React.FC = () => {
       setStartButton(null);
       return;
     }
+
     const rect = target.getBoundingClientRect();
+
     const endButton = {
       id: target.id,
       x: rect.left + rect.width / 2,
@@ -73,32 +79,34 @@ const Comparator: React.FC = () => {
 
     const newLine: Line =
       startButton.x < endButton.x
-        ? { start: startButton, end: endButton }
-        : { start: endButton, end: startButton };
+        ? {
+            start: startButton,
+            end: endButton,
+          }
+        : {
+            start: endButton,
+            end: startButton,
+          };
+
+    console.log('5 newLine:', newLine);
 
     setLines([...lines, newLine]);
     setStartButton(null);
   };
 
-  // Move event handler for mouse/touch
-  const handleMove = (
+  const handleMouseMove = (
     e: MouseEvent<HTMLDivElement> | TouchEvent<HTMLDivElement>
   ) => {
-    e.preventDefault();
-
     if (!startButton) return;
 
     const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
     const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
 
-    const line = document.getElementById('in-progress-line');
-    if (line) {
-      line.setAttribute('x2', clientX.toString());
-      line.setAttribute('y2', clientY.toString());
-    }
+    const line = document.getElementById('in-progress-line')!;
+    line.setAttribute('x2', clientX.toString());
+    line.setAttribute('y2', clientY.toString());
   };
 
-  // Reset lines or update layout logic
   const handleUpdateLines = (connected?: 'start' | 'end' | 'equal') => {
     const top1 = document.getElementById('top1')!.getBoundingClientRect();
     const top2 = document.getElementById('top2')!.getBoundingClientRect();
@@ -234,6 +242,7 @@ const Comparator: React.FC = () => {
 
     setLines(autoLines);
   };
+
   const handleSwitchLines = () => {
     if (lines.length === 0) {
       handleUpdateLines();
@@ -242,7 +251,6 @@ const Comparator: React.FC = () => {
     }
   };
 
-  // Animation logic
   const handlePlayAnimation = () => {
     const calculateDistance = (
       point1: { x: number; y: number },
@@ -296,10 +304,10 @@ const Comparator: React.FC = () => {
     <div
       className="flex justify-center flex-col items-center h-screen bg-gray-100"
       role="application"
-      onMouseMove={handleMove}
-      onMouseUp={handleEnd}
-      onTouchMove={handleMove}
-      onTouchEnd={handleEnd}
+      onMouseMove={handleMouseMove}
+      onMouseUp={() => setStartButton(null)}
+      onTouchMove={handleMouseMove}
+      onTouchEnd={() => setStartButton(null)}
     >
       <svg className="absolute top-0 left-0 w-full h-full pointer-events-none">
         {lines.map((line, index) => (
@@ -327,7 +335,7 @@ const Comparator: React.FC = () => {
       </svg>
 
       <div className="w-[700px] h-[600px] bg-white flex flex-col bg">
-        <div className="grid grid-cols-3 h-1/6 pt-5">
+        <div className="grid grid-cols-3 h-1/6  pt-5">
           <BlockGenerator
             stack={leftStack}
             setStack={setLeftStack}
@@ -351,7 +359,8 @@ const Comparator: React.FC = () => {
         <div className="grid grid-cols-3 h-5/6">
           <div className="flex flex-col-reverse items-center justify-center">
             <LineStarter
-              handleMouseDown={handleStart}
+              handleMouseDown={handleMouseDown}
+              handleMouseUp={handleMouseUp}
               lines={lines}
               id="bottom1"
               hidden={leftStack === 0 && rightStack === 0}
@@ -364,7 +373,8 @@ const Comparator: React.FC = () => {
               />
             ))}
             <LineStarter
-              handleMouseDown={handleStart}
+              handleMouseDown={handleMouseDown}
+              handleMouseUp={handleMouseUp}
               lines={lines}
               id="top1"
               hidden={leftStack === 0 && rightStack === 0}
@@ -379,7 +389,8 @@ const Comparator: React.FC = () => {
           </div>
           <div className="flex flex-col-reverse items-center justify-center">
             <LineStarter
-              handleMouseDown={handleStart}
+              handleMouseDown={handleMouseDown}
+              handleMouseUp={handleMouseUp}
               lines={lines}
               id="bottom2"
               hidden={leftStack === 0 && rightStack === 0}
@@ -392,7 +403,8 @@ const Comparator: React.FC = () => {
               />
             ))}
             <LineStarter
-              handleMouseDown={handleStart}
+              handleMouseDown={handleMouseDown}
+              handleMouseUp={handleMouseUp}
               lines={lines}
               id="top2"
               hidden={leftStack === 0 && rightStack === 0}
@@ -400,6 +412,7 @@ const Comparator: React.FC = () => {
           </div>
         </div>
       </div>
+      <div className="absolute text-gray-400 bottom-0 right-1">v 1.1</div>
     </div>
   );
 };

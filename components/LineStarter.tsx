@@ -1,8 +1,13 @@
-import React, { MouseEvent } from 'react';
+import React, { MouseEvent, TouchEvent } from 'react';
 import type { Line } from '../types';
 
 type ControlsProps = {
-  handleMouseDown: (e: MouseEvent<HTMLButtonElement>) => void;
+  handleMouseDown: (
+    e: MouseEvent<HTMLButtonElement> | TouchEvent<HTMLButtonElement>
+  ) => void;
+  handleMouseUp: (
+    e: MouseEvent<HTMLButtonElement> | TouchEvent<HTMLButtonElement>
+  ) => void;
   lines: Line[];
   id: string;
   hidden?: boolean;
@@ -10,6 +15,7 @@ type ControlsProps = {
 
 const LineStarter: React.FC<ControlsProps> = ({
   handleMouseDown,
+  handleMouseUp,
   lines,
   id,
   hidden,
@@ -25,9 +31,9 @@ const LineStarter: React.FC<ControlsProps> = ({
         isButtonDisabled(id) ? 'opacity-0' : ''
       } ${hidden ? 'hidden' : ''}`}
       onMouseDown={handleMouseDown}
-      onTouchStart={
-        handleMouseDown as unknown as React.TouchEventHandler<HTMLButtonElement>
-      }
+      onMouseUp={handleMouseUp}
+      onTouchStart={handleMouseDown}
+      onTouchEnd={handleMouseUp}
       disabled={isButtonDisabled(id)}
       title="Drag to create a new line"
     >
