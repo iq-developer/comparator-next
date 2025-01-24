@@ -30,7 +30,7 @@ export const Dustbin: FC = () => {
   return (
     <div
       ref={buttonRef}
-      className={`absolute top-0 h-36 w-full text-white p-4 text-center text-base leading-normal opacity-50 ${backgroundColor} ${zIndex}`}
+      className={`absolute h-full w-full text-white p-4 text-center text-base leading-normal opacity-50 ${backgroundColor} ${zIndex}`}
       data-testid="dustbin"
     >
       {isActive ? 'Release to drop' : 'Drag block here to remove'}

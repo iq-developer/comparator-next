@@ -299,7 +299,7 @@ const Comparator: React.FC = () => {
   }, [lines]);
 
   return (
-    <DndProvider backend={TouchBackend}>
+    <DndProvider backend={TouchBackend} options={{ enableMouseEvents: true }}>
       <div
         className="flex justify-center flex-col items-center h-screen bg-gray-100"
         role="application"
@@ -379,6 +379,7 @@ const Comparator: React.FC = () => {
                   handleAddBlock={() =>
                     setLeftStack(leftStack < 10 ? leftStack + 1 : leftStack)
                   }
+                  position="left"
                 />
               )}
               <LineStarter
@@ -389,12 +390,13 @@ const Comparator: React.FC = () => {
                 hidden={leftStack === 0 && rightStack === 0}
               />
             </div>
-            <div className="flex items-center justify-center">
+            <div className=" relative flex items-center justify-center">
               <ComparatorSign
                 leftStack={leftStack}
                 rightStack={rightStack}
                 finished={finished}
               />
+              <Dustbin />
             </div>
             <div className="flex flex-col-reverse items-center justify-center">
               <LineStarter
@@ -419,6 +421,7 @@ const Comparator: React.FC = () => {
                   handleAddBlock={() =>
                     setRightStack(rightStack < 10 ? rightStack + 1 : rightStack)
                   }
+                  position="right"
                 />
               )}
               <LineStarter
@@ -431,7 +434,6 @@ const Comparator: React.FC = () => {
             </div>
           </div>
         </div>
-        <Dustbin />
 
         <div className="absolute text-gray-400 bottom-0 right-1">v 1.3</div>
       </div>
