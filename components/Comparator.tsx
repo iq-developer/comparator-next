@@ -435,7 +435,7 @@ const Comparator: React.FC = () => {
           </div>
         </div>
 
-        <div className="absolute text-gray-400 bottom-0 right-1">v 1.3</div>
+        <div className="absolute text-gray-400 bottom-0 right-1">v 1.4</div>
       </div>
     </DndProvider>
   );
