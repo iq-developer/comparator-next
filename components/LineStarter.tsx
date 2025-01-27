@@ -10,7 +10,8 @@ type ControlsProps = {
   ) => void;
   lines: Line[];
   id: string;
-  hidden?: boolean;
+  hidden: boolean;
+  ref: React.RefObject<HTMLButtonElement>;
 };
 
 const LineStarter: React.FC<ControlsProps> = ({
@@ -19,6 +20,7 @@ const LineStarter: React.FC<ControlsProps> = ({
   lines,
   id,
   hidden,
+  ref,
 }) => {
   const isButtonDisabled = (id: string) => {
     return lines.some((line) => line.start.id === id || line.end.id === id);
@@ -36,6 +38,7 @@ const LineStarter: React.FC<ControlsProps> = ({
       onTouchEnd={handleMouseUp}
       disabled={isButtonDisabled(id)}
       title="Drag to create a new line"
+      ref={ref}
     >
       {id.includes('1') ? '⇢' : '⇠'}
     </button>

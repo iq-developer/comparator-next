@@ -1,6 +1,12 @@
 'use client';
 
-import React, { useState, MouseEvent, TouchEvent, useEffect } from 'react';
+import React, {
+  useState,
+  MouseEvent,
+  TouchEvent,
+  useEffect,
+  useRef,
+} from 'react';
 import Block from './Block';
 import BlockGenerator from './BlockGenerator';
 import Controls from './Controls';
@@ -25,16 +31,23 @@ const Comparator: React.FC = () => {
   const [finished, setFinished] = useState(false);
   const [isLabelMode, setIsLabelMode] = useState(true);
 
+  // Refs for buttons and line
+  const top1Ref = useRef<HTMLButtonElement>(null!);
+  const top2Ref = useRef<HTMLButtonElement>(null!);
+  const bottom1Ref = useRef<HTMLButtonElement>(null!);
+  const bottom2Ref = useRef<HTMLButtonElement>(null!);
+  const inProgressLineRef = useRef<SVGLineElement>(null);
+
   // Handlers
   const handleMouseDown = (
     e: MouseEvent<HTMLButtonElement> | TouchEvent<HTMLButtonElement>
   ) => {
-    const buttonId = (e.target as HTMLButtonElement).id;
-    if (startButton || !buttonId) return;
+    const button = e.target as HTMLButtonElement;
+    if (startButton || !button.id) return;
 
-    const rect = (e.target as HTMLButtonElement).getBoundingClientRect();
+    const rect = button.getBoundingClientRect();
     setStartButton({
-      id: buttonId,
+      id: button.id,
       x: rect.left + rect.width / 2,
       y: rect.top + rect.height / 2,
     });
@@ -46,10 +59,10 @@ const Comparator: React.FC = () => {
     if (!startButton) return;
 
     const target =
-      e.type === 'touchend'
+      'changedTouches' in e
         ? document.elementFromPoint(
-            (e as TouchEvent<HTMLButtonElement>).changedTouches[0].clientX,
-            (e as TouchEvent<HTMLButtonElement>).changedTouches[0].clientY
+            e.changedTouches[0].clientX,
+            e.changedTouches[0].clientY
           )
         : (e.target as HTMLButtonElement);
 
@@ -70,7 +83,6 @@ const Comparator: React.FC = () => {
     }
 
     const rect = target.getBoundingClientRect();
-
     const endButton = {
       id: target.id,
       x: rect.left + rect.width / 2,
@@ -100,16 +112,36 @@ const Comparator: React.FC = () => {
     const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
     const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
 
-    const line = document.getElementById('in-progress-line')!;
-    line.setAttribute('x2', clientX.toString());
-    line.setAttribute('y2', clientY.toString());
+    if (inProgressLineRef.current) {
+      console.log('inProgressLineRef.current:', inProgressLineRef.current);
+
+      inProgressLineRef.current.setAttribute('x2', clientX.toString());
+      inProgressLineRef.current.setAttribute('y2', clientY.toString());
+    }
   };
 
   const handleUpdateLines = (connected?: 'start' | 'end' | 'equal') => {
-    const top1 = document.getElementById('top1')!.getBoundingClientRect();
-    const top2 = document.getElementById('top2')!.getBoundingClientRect();
-    const bottom1 = document.getElementById('bottom1')!.getBoundingClientRect();
-    const bottom2 = document.getElementById('bottom2')!.getBoundingClientRect();
+    if (
+      !top1Ref.current ||
+      !top2Ref.current ||
+      !bottom1Ref.current ||
+      !bottom2Ref.current
+    ) {
+      console.log('old :', document.getElementById('top1'));
+
+      console.log('return:');
+      console.log('top1Ref.current:', top1Ref.current);
+      console.log('top2Ref.current:', top2Ref.current);
+      console.log('bottom1Ref.current:', bottom1Ref.current);
+      console.log('bottom2Ref.current:', bottom2Ref.current);
+
+      return;
+    }
+
+    const top1 = top1Ref.current.getBoundingClientRect();
+    const top2 = top2Ref.current.getBoundingClientRect();
+    const bottom1 = bottom1Ref.current.getBoundingClientRect();
+    const bottom2 = bottom2Ref.current.getBoundingClientRect();
 
     const autoLines: Line[] = [
       {
@@ -242,11 +274,9 @@ const Comparator: React.FC = () => {
   };
 
   const handleSwitchLines = () => {
-    if (lines.length === 0) {
-      handleUpdateLines();
-    } else {
-      setLines([]);
-    }
+    console.log('lines:', lines);
+
+    lines.length === 0 ? handleUpdateLines() : setLines([]);
   };
 
   const handlePlayAnimation = () => {
@@ -322,7 +352,7 @@ const Comparator: React.FC = () => {
           ))}
           {startButton && (
             <line
-              id="in-progress-line"
+              ref={inProgressLineRef}
               x1={startButton.x}
               y1={startButton.y}
               x2={startButton.x}
@@ -333,8 +363,8 @@ const Comparator: React.FC = () => {
           )}
         </svg>
 
-        <div className="w-[700px] h-[600px] bg-white flex flex-col bg">
-          <div className="grid grid-cols-3 h-1/6  pt-5">
+        <div className="w-[700px] h-[600px] bg-white flex flex-col">
+          <div className="grid grid-cols-3 h-1/6 pt-5">
             <BlockGenerator
               stack={leftStack}
               setStack={setLeftStack}
@@ -358,6 +388,7 @@ const Comparator: React.FC = () => {
           <div className="grid grid-cols-3 h-5/6">
             <div className="flex flex-col-reverse items-center justify-center">
               <LineStarter
+                ref={bottom1Ref}
                 handleMouseDown={handleMouseDown}
                 handleMouseUp={handleMouseUp}
                 lines={lines}
@@ -383,6 +414,7 @@ const Comparator: React.FC = () => {
                 />
               )}
               <LineStarter
+                ref={top1Ref}
                 handleMouseDown={handleMouseDown}
                 handleMouseUp={handleMouseUp}
                 lines={lines}
@@ -390,7 +422,7 @@ const Comparator: React.FC = () => {
                 hidden={leftStack === 0 && rightStack === 0}
               />
             </div>
-            <div className=" relative flex items-center justify-center">
+            <div className="relative flex items-center justify-center">
               <ComparatorSign
                 leftStack={leftStack}
                 rightStack={rightStack}
@@ -400,6 +432,7 @@ const Comparator: React.FC = () => {
             </div>
             <div className="flex flex-col-reverse items-center justify-center">
               <LineStarter
+                ref={bottom2Ref}
                 handleMouseDown={handleMouseDown}
                 handleMouseUp={handleMouseUp}
                 lines={lines}
@@ -425,6 +458,7 @@ const Comparator: React.FC = () => {
                 />
               )}
               <LineStarter
+                ref={top2Ref}
                 handleMouseDown={handleMouseDown}
                 handleMouseUp={handleMouseUp}
                 lines={lines}
