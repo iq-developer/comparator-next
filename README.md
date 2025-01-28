@@ -1,4 +1,4 @@
-# Copmarator Widget
+# Comparator Widget
 
 ## My assumptions
 
