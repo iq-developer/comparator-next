@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import './Block.css';
 import { useDrag } from 'react-dnd';
-
 import { ItemTypes } from './ItemTypes';
 
 interface BlockProps {
@@ -35,15 +34,14 @@ const Block: React.FC<BlockProps> = ({
   }));
 
   const opacity = isDragging ? 0.4 : 1;
-
-  const buttonRef = React.useRef<HTMLButtonElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
   drag(buttonRef);
 
   return (
     <button
       ref={buttonRef}
       style={{ opacity }}
-      data-testid={`box`}
+      data-testid="box"
       className="w-5 h-5 mb-4 block-appearance"
       onClick={handleAddBlock}
       title="Click to add block"
