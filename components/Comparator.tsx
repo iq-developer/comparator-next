@@ -264,7 +264,11 @@ const Comparator: React.FC = () => {
   };
 
   const handleSwitchLines = () => {
-    lines.length === 0 ? handleUpdateLines() : setLines([]);
+    if (lines.length === 0) {
+      handleUpdateLines();
+    } else {
+      setLines([]);
+    }
   };
 
   const handlePlayAnimation = () => {
