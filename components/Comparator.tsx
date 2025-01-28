@@ -113,8 +113,6 @@ const Comparator: React.FC = () => {
     const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
 
     if (inProgressLineRef.current) {
-      console.log('inProgressLineRef.current:', inProgressLineRef.current);
-
       inProgressLineRef.current.setAttribute('x2', clientX.toString());
       inProgressLineRef.current.setAttribute('y2', clientY.toString());
     }
@@ -127,14 +125,6 @@ const Comparator: React.FC = () => {
       !bottom1Ref.current ||
       !bottom2Ref.current
     ) {
-      console.log('old :', document.getElementById('top1'));
-
-      console.log('return:');
-      console.log('top1Ref.current:', top1Ref.current);
-      console.log('top2Ref.current:', top2Ref.current);
-      console.log('bottom1Ref.current:', bottom1Ref.current);
-      console.log('bottom2Ref.current:', bottom2Ref.current);
-
       return;
     }
 
@@ -274,8 +264,6 @@ const Comparator: React.FC = () => {
   };
 
   const handleSwitchLines = () => {
-    console.log('lines:', lines);
-
     lines.length === 0 ? handleUpdateLines() : setLines([]);
   };
 
