@@ -11,21 +11,20 @@ const ComparatorSign: React.FC<ComparatorSignProps> = ({
   rightStack,
   finished,
 }) => {
+  if (!leftStack && !rightStack) {
+    return null;
+  }
+
   let result = '';
   let title = '';
 
-  if (!leftStack && !rightStack) {
-    return;
-  }
   if (leftStack === rightStack) {
     result = '=';
     title = 'Both stacks are equal';
-  }
-  if (leftStack > rightStack) {
+  } else if (leftStack > rightStack) {
     result = '>';
     title = 'Left stack is greater';
-  }
-  if (leftStack < rightStack) {
+  } else {
     result = '<';
     title = 'Right stack is greater';
   }
